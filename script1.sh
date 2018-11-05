@@ -16,10 +16,10 @@ test -f $finalFile|| touch $finalFile
 for i in `cat "$1" | grep "^[^#]"`; do
 
   wget -q $i -O $tempFile #get and calculate the md5sum of the page
-  if [ $? -ne 0 ]; then
+  if [ $? -ne 0 ]; then #if the wget couldn't for some reason download the page
     echo $i FAILED >&2
     echo $i FAILED >> $filename
-  else
+  else #if everything went ok
     md5=`md5sum $tempFile | awk '{ print $1 }'`
     previousSum=`cat $finalFile | grep $i | awk '{print $2}'`
     if [ "$previousSum" == "" ]; then #didn't find the that page from the previous run
@@ -29,7 +29,6 @@ for i in `cat "$1" | grep "^[^#]"`; do
     fi
     echo $i $md5 >> $filename
   fi
-
 done
 
 #remove the unnecessary files and rename the final file
