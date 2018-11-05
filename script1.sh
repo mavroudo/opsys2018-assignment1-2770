@@ -8,6 +8,7 @@ if [ $# -ne 1 ]
 then
   echo "$0 needs to a file to read the addresses"
 fi
+
 #creating files
 touch $filename
 test -f $finalFile|| touch $finalFile
@@ -23,10 +24,8 @@ for i in `cat "$1" | grep "^[^#]"`; do
     previousSum=`cat $finalFile | grep $i | awk '{print $2}'`
     if [ "$previousSum" == "" ]; then #didn't find the that page from the previous run
       echo $i INIT
-    else
-      if [ "$md5" != "$previousSum" ]; then #the pages have changed from the previous run of the script
+    elif [ "$md5" != "$previousSum" ]; then #the pages have changed from the previous run of the script
       echo $i
-      fi
     fi
     echo $i $md5 >> $filename
   fi
