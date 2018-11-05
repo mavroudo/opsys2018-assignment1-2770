@@ -1,0 +1,3 @@
+http://www.tldp.org b022cc19bde2326a80bb063ef8cefac8
+https://en.wikipedia.org/wiki/Linux cb4feccd9891e8878c031ae8ad09a888
+https://www.gnu.org/software/bash/ f7bcef8d574d3c27eb09fda147964614
