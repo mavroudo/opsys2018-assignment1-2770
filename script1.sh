@@ -1,5 +1,5 @@
  #!/bin/bash
-
+#initialize the names of the files
 filename="tempResults.txt"
 tempFile="tempWGET.txt"
 finalFile="results.txt"
@@ -8,28 +8,29 @@ if [ $# -ne 1 ]
 then
   echo "$0 needs to a file to read the addresses"
 fi
-
-touch $filename #creating tempfile
+#creating files
+touch $filename
 test -f $finalFile|| touch $finalFile
 
 for i in `cat "$1" | grep "^[^#]"`; do
 
   wget -q $i -O $tempFile #get and calculate the md5sum of the page
-  md5=`md5sum $tempFile | awk '{ print $1 }'`
-
-  previousSum=`cat $finalFile | grep $i | awk '{print $2}'`
-
-  if [ "$previousSum" == "" ] #didn't find the that page from the previous run
-  then
-    echo $i INIT
+  if [ $? -ne 0 ]; then
+    echo $i FAILED >&2
+    echo $i FAILED >> $filename
+  else
+    md5=`md5sum $tempFile | awk '{ print $1 }'`
+    previousSum=`cat $finalFile | grep $i | awk '{print $2}'`
+    if [ "$previousSum" == "" ]; then #didn't find the that page from the previous run
+      echo $i INIT
+    else
+      if [ "$md5" != "$previousSum" ]; then #the pages have changed from the previous run of the script
+      echo $i
+      fi
+    fi
+    echo $i $md5 >> $filename
   fi
 
-  if [ "$md5" != "$previousSum" ]#the pages have changed from the previous run of the script
-  then
-    echo $i
-  fi
-
-  echo $i $md5 >> $filename
 done
 
 #remove the unnecessary files and rename the final file
