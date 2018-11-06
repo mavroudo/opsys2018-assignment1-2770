@@ -9,13 +9,12 @@ if [ $# -ne 1 ]
 then
   echo "$0 needs a tar.gz file"
 fi
-#unzip the file with the txts
+#make the directores and unzip the file given
 mkdir -p $resources
 mkdir -p $assignments
 tar xzf $1 -C $resources
 cd $resources
-
-
+#find all the simple text files (.txt) get the line starts with https
 for i in `find . -type f -name "*.txt"`; do
   gitUrl=`cat $i | grep "^https" | head -1`
   if [ "$gitUrl" != "" ]; then
