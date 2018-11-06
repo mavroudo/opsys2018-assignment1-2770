@@ -1,6 +1,9 @@
 #!/bin/bash
 resources="resources"
 assignments="assignments"
+#remove everything from previous execution
+rm -rf $resources
+rm -rf $assignments
 #check if there is only one parammeter given
 if [ $# -ne 1 ]
 then
@@ -22,6 +25,7 @@ for i in `find . -type f -name "*.txt"`; do
       echo $gitUrl ": Cloning OK"
     else
       echo $gitUrl ": Cloning FAILED"
+    fi
     cd ../$resources
   fi
 done
