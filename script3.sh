@@ -19,12 +19,34 @@ for i in `find . -type f -name "*.txt"`; do
   gitUrl=`cat $i | grep "^https" | head -1`
   if [ "$gitUrl" != "" ]; then
     cd ../$assignments
-    git clone -q $gitUrl
+    git clone -q $gitUrl >/dev/null 2>&1 #redirecting in case if fails
     if [ $? -eq 0 ]; then
       echo $gitUrl ": Cloning OK"
     else
-      echo $gitUrl ": Cloning FAILED"
+      echo $gitUrl ": Cloning FAILED" >&2
     fi
     cd ../$resources
+  fi
+done
+
+cd ../$assignments
+for i in `ls`; do
+  echo "$i :"
+  numberOfDirectries=`find $i -type d | grep -v "$i/.git" | wc -l`
+  numberOfDirectries=$((numberOfDirectries-1))
+  numberOfTxts=`find $i -type f | grep -v "$i/.git" | grep ".txt$"| wc -l`
+  numberOfRest=`find $i -type f | grep -v "$i/.git" | grep -v ".txt$"| wc -l`
+  echo "Number of direcories : $numberOfDirectries"
+  echo "Number of txt files : $numberOfTxts"
+  echo "Number of other files : $numberOfRest"
+  if [ $numberOfDirectries -eq 1 ] && [ $numberOfTxts -eq 3 ] && [ $numberOfRest -eq 0 ]; then
+    if [ `find $i -type f | grep "$i/dataA.txt" | wc -l` -eq 1 ] && [ `find $i -type f | grep "$i/more/dataB.txt" | wc -l` -eq 1 ] && [ `find $i -type f | grep "$i/more/dataC.txt" | wc -l` -eq 1 ]
+    then
+      echo Directory structure is OK
+    else
+      echo Directory structure is NOT OK
+    fi
+  else
+    echo Directory structure is NOT OK
   fi
 done
