@@ -20,11 +20,11 @@ for i in `cat "$1" | grep "^[^#]"`; do
     echo $i FAILED >&2
     echo $i FAILED >> $filename
   else #if everything went ok
-    md5=`md5sum $tempFile | awk '{ print $1 }'`
-    previousSum=`cat $finalFile | grep $i | awk '{print $2}'`
-    if [ "$previousSum" == "" ]; then #didn't find the that page from the previous run
+    md5=($(md5sum $tempFile))
+    previousSum=($(cat $finalFile | grep $i))
+    if [ "${previousSum[1]}" == "" ]; then #didn't find the that page from the previous run
       echo $i INIT
-    elif [ "$md5" != "$previousSum" ]; then #the pages have changed from the previous run of the script
+    elif [ "$md5" != "${previousSum[1]}" ]; then #the pages have changed from the previous run of the script
       echo $i
     fi
     echo $i $md5 >> $filename
