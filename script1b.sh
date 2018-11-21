@@ -13,23 +13,33 @@ fi
 touch $filename
 test -f $finalFile|| touch $finalFile
 
-for i in `cat "$1" | grep "^[^#]"`; do
-
-  wget -q $i -O $tempFile #get and calculate the md5sum of the page
+calculateAFile()
+{
+  wget -q $1 -O $2 #get and calculate the md5sum of the page
   if [ $? -ne 0 ]; then #if the wget couldn't for some reason download the page
     echo $i FAILED >&2
     echo $i FAILED >> $filename
   else #if everything went ok
-    md5=($(md5sum $tempFile))
-    previousSum=($(cat $finalFile | grep $i))
+    md5=($(md5sum $2))
+    previousSum=($(cat $finalFile | grep $1))
     if [ "${previousSum[1]}" == "" ]; then #didn't find the that page from the previous run
       echo $i INIT
     elif [ "$md5" != "${previousSum[1]}" ]; then #the pages have changed from the previous run of the script
-      echo $i
+      echo $1
     fi
-    echo $i $md5 >> $filename
+    echo $1 $md5 >> $filename
   fi
+  rm -f $2
+}
+
+COUNTER=0
+
+for i in `cat "$1" | grep "^[^#]"`; do
+   calculateAFile $i $COUNTER &
+   ((COUNTER++))
+  
 done
+wait
 
 #remove the unnecessary files and rename the final file
 rm -f $finalFile
