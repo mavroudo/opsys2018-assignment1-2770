@@ -1,4 +1,0 @@
-https://en.wikipedia.org/wiki/John_Lennon b1eddd57aaf5b45e7418fa8d42acb767
-http://www.tldp.org efcce07698a1cd4162eb0e831a9d58b9
-https://en.wikipedia.org/wiki/Linux 30879e4dbde919654cd2be217a317101
-https://www.gnu.org/software/bash/ 334a0a4cc669d558c128f785cd5e85c6
